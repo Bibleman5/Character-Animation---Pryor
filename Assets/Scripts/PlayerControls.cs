@@ -9,10 +9,13 @@ public class PlayerControls : MonoBehaviour
     public Animator anim;
     public AudioClip runningSound;
     private AudioSource audioSource;
+    public AudioClip stepSound; // Sound effect for footsteps
+    private float stepTimer = 0.0f; // Timer to manage step sound frequency
 
     public float runningSpeed = 4.0f;
     public float rotationSpeed = 100.0f;
     public float jumpHeight = 6.0f;
+    public float stepInterval = 0.5f; // Time interval between footstep sounds
 
     private float jumpInput;
     private float runInput;
@@ -90,6 +93,13 @@ public class PlayerControls : MonoBehaviour
                 audioSource.clip = runningSound;
                 audioSource.Play();
             }
+
+            // Handle footstep sound effect
+            if (controller.isGrounded && stepTimer <= 0f) // Only play when grounded
+            {
+                audioSource.PlayOneShot(stepSound);
+                stepTimer = stepInterval; // Reset timer for next step sound
+            }
         }
         else
         {
@@ -100,6 +110,12 @@ public class PlayerControls : MonoBehaviour
             {
                 audioSource.Stop();
             }
+        }
+
+        // Update step timer
+        if (stepTimer > 0f)
+        {
+            stepTimer -= Time.deltaTime;
         }
     }
 }
